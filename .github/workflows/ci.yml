@@ -1,0 +1,147 @@
+# SmartWin Continuous Integration
+# Triggers on push to main/develop and all pull requests
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, 'release/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-backend:
+    name: Build & Test Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test_root
+          MYSQL_DATABASE: smartwin_test
+          MYSQL_USER: smartwin
+          MYSQL_PASSWORD: smartwin_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+      redis:
+        image: redis:7.2-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: mvn clean compile -q
+        if: hashFiles('pom.xml') != ''
+
+      - name: Run unit tests
+        run: mvn test -Dspring.profiles.active=test
+        if: hashFiles('pom.xml') != ''
+
+      - name: Generate test coverage report
+        run: mvn jacoco:report
+        if: hashFiles('pom.xml') != ''
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('pom.xml') != ''
+        with:
+          name: backend-coverage-report
+          path: target/site/jacoco/
+
+      - name: Check coverage threshold
+        run: mvn jacoco:check
+        if: hashFiles('pom.xml') != ''
+
+  build-frontend:
+    name: Build & Test Frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+        if: hashFiles('frontend/package.json') != ''
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+        if: hashFiles('frontend/package.json') != ''
+
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: frontend
+        if: hashFiles('frontend/package.json') != ''
+
+      - name: Run frontend tests
+        run: npm test -- --coverage --watchAll=false
+        working-directory: frontend
+        if: hashFiles('frontend/package.json') != ''
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+        if: hashFiles('frontend/package.json') != ''
+
+  build-ai:
+    name: Build & Test AI Module
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+        if: hashFiles('ai-module/requirements.txt') != ''
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+        working-directory: ai-module
+        if: hashFiles('ai-module/requirements.txt') != ''
+
+      - name: Run Python tests
+        run: pytest --cov=. --cov-report=xml -v
+        working-directory: ai-module
+        if: hashFiles('ai-module/requirements.txt') != ''
+
+  notify-failure:
+    name: Notify on Failure
+    needs: [build-backend, build-frontend, build-ai]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send failure notification
+        run: |
+          echo "CI failed for ${{ github.repository }} on branch ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          # Add actual notification logic (Slack, email, etc.)

@@ -1,0 +1,197 @@
+# SmartWin Alerting Rules
+# Documentation: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+
+groups:
+  # ============================================================
+  # Service Availability Alerts
+  # ============================================================
+  - name: service_availability
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: platform
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "{{ $labels.job }} (instance {{ $labels.instance }}) has been down for more than 1 minute."
+          runbook: "https://wiki.smartwin.example.com/runbooks/service-down"
+
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) by (job)
+          /
+          sum(rate(http_server_requests_seconds_count[5m])) by (job)
+          > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          team: platform
+        annotations:
+          summary: "High error rate for {{ $labels.job }}"
+          description: "{{ $labels.job }} error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      - alert: ServiceUnavailable
+        expr: |
+          sum(up{job=~"smartwin.*"}) by (job) == 0
+        for: 30s
+        labels:
+          severity: page
+          team: platform
+        annotations:
+          summary: "SmartWin service {{ $labels.job }} is completely unavailable"
+
+  # ============================================================
+  # Performance Alerts
+  # ============================================================
+  - name: performance
+    rules:
+      - alert: HighResponseTime
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_server_requests_seconds_bucket[5m])) by (le, job, uri)
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "High P95 response time for {{ $labels.job }}"
+          description: "P95 response time is {{ $value | humanizeDuration }} (threshold: 500ms) for endpoint {{ $labels.uri }}"
+
+      - alert: VeryHighResponseTime
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_server_requests_seconds_bucket[5m])) by (le, job, uri)
+          ) > 2.0
+        for: 2m
+        labels:
+          severity: critical
+          team: backend
+        annotations:
+          summary: "Very high P95 response time for {{ $labels.job }}"
+          description: "P95 response time is {{ $value | humanizeDuration }} (threshold: 2s)"
+
+      - alert: LowThroughput
+        expr: |
+          sum(rate(http_server_requests_seconds_count[5m])) by (job) < 10
+        for: 10m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Low throughput for {{ $labels.job }}"
+          description: "Request rate is {{ $value | humanize }} req/s, which is abnormally low."
+
+  # ============================================================
+  # Resource Alerts
+  # ============================================================
+  - name: resources
+    rules:
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}% (threshold: 80%)"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% (threshold: 85%)"
+
+      - alert: DiskSpaceLow
+        expr: |
+          (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk usage is {{ $value | humanize }}% on {{ $labels.mountpoint }}"
+
+      - alert: JVMHeapUsageHigh
+        expr: |
+          jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"} > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "High JVM heap usage for {{ $labels.job }}"
+          description: "JVM heap usage is {{ $value | humanizePercentage }}"
+
+  # ============================================================
+  # Database Alerts
+  # ============================================================
+  - name: database
+    rules:
+      - alert: MySQLConnectionsHigh
+        expr: mysql_global_status_threads_connected / mysql_global_variables_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+        annotations:
+          summary: "MySQL connection pool nearly exhausted"
+          description: "MySQL is using {{ $value | humanizePercentage }} of max connections"
+
+      - alert: MySQLDown
+        expr: mysql_up == 0
+        for: 30s
+        labels:
+          severity: critical
+          team: database
+        annotations:
+          summary: "MySQL database is down"
+
+      - alert: RedisMemoryHigh
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+        annotations:
+          summary: "Redis memory usage is high"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
+
+  # ============================================================
+  # Business Alerts
+  # ============================================================
+  - name: business
+    rules:
+      - alert: AIChainExecutionFailureHigh
+        expr: |
+          sum(rate(ai_chain_execution_total{status="failed"}[10m])) by (chain_id)
+          /
+          sum(rate(ai_chain_execution_total[10m])) by (chain_id)
+          > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          team: ai
+        annotations:
+          summary: "High AI chain execution failure rate for {{ $labels.chain_id }}"
+          description: "Failure rate is {{ $value | humanizePercentage }}"
+
+      - alert: DataQualityScoreDegraded
+        expr: avg(data_asset_quality_score) < 80
+        for: 30m
+        labels:
+          severity: warning
+          team: data
+        annotations:
+          summary: "Average data quality score has degraded"
+          description: "Average quality score is {{ $value | humanize }} (threshold: 80)"
