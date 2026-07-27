@@ -1,0 +1,25 @@
+name: Code Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  quality-config-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate quality configuration files
+        run: |
+          test -f tools/sonarqube-config.properties
+          test -f tools/eslint.config.js
+          test -f tools/prettier.config.js
+          test -f tools/checkstyle.xml
+      - name: SonarQube config readiness
+        run: |
+          if [ -n "${SONAR_TOKEN:-}" ]; then
+            echo "SONAR_TOKEN is configured."
+          else
+            echo "SONAR_TOKEN not configured; repository is ready when secret is added."
+          fi

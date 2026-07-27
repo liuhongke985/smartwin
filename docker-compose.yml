@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: smartwin-postgres
+    environment:
+      POSTGRES_DB: smartwin
+      POSTGRES_USER: smartwin
+      POSTGRES_PASSWORD: smartwin_dev
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartwin -d smartwin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: smartwin-redis
+    ports:
+      - "6379:6379"

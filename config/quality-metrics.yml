@@ -1,0 +1,11 @@
+quality_gates:
+  ci_success_rate:
+    target: ">=95%"
+  basic_tests:
+    target: "pass"
+  security_scan:
+    target: "no critical findings"
+
+reporting:
+  cadence: weekly
+  owner: QA Lead
