@@ -1,0 +1,8 @@
+# SmartWin 质量指标
+# 创建日期: 2026-07-27
+# 版本: v1.0.0
+quality:
+  code_coverage: 80
+  defect_per_kloc: 3
+  p0_vulnerability: 0
+  api_p95_ms: 500

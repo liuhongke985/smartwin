@@ -1,0 +1,13 @@
+# SmartWin 团队结构
+# 创建日期: 2026-07-27
+# 版本: v1.0.0
+team:
+  pmc:
+    - role: PM
+    - role: 架构师
+    - role: 技术负责人
+  squads:
+    - name: platform
+      lead: tech-lead-platform
+    - name: frontend
+      lead: tech-lead-frontend

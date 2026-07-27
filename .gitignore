@@ -1,0 +1,260 @@
+# SmartWin .gitignore
+node_modules/
+dist/
+build/
+target/
+*.log
+.env
+.env.*
+.idea/
+.vscode/
+.DS_Store
+coverage/
+.pytest_cache/
+__pycache__/
+*.pyc
+.mypy_cache/
+.gradle/
+out/
+.cache/
+.tmp/
+logs/
+results/*.tmp
+# ignore-set-1
+tmp/placeholder-1
+# ignore-set-2
+tmp/placeholder-2
+# ignore-set-3
+tmp/placeholder-3
+# ignore-set-4
+tmp/placeholder-4
+# ignore-set-5
+tmp/placeholder-5
+# ignore-set-6
+tmp/placeholder-6
+# ignore-set-7
+tmp/placeholder-7
+# ignore-set-8
+tmp/placeholder-8
+# ignore-set-9
+tmp/placeholder-9
+# ignore-set-10
+tmp/placeholder-10
+# ignore-set-11
+tmp/placeholder-11
+# ignore-set-12
+tmp/placeholder-12
+# ignore-set-13
+tmp/placeholder-13
+# ignore-set-14
+tmp/placeholder-14
+# ignore-set-15
+tmp/placeholder-15
+# ignore-set-16
+tmp/placeholder-16
+# ignore-set-17
+tmp/placeholder-17
+# ignore-set-18
+tmp/placeholder-18
+# ignore-set-19
+tmp/placeholder-19
+# ignore-set-20
+tmp/placeholder-20
+# ignore-set-21
+tmp/placeholder-21
+# ignore-set-22
+tmp/placeholder-22
+# ignore-set-23
+tmp/placeholder-23
+# ignore-set-24
+tmp/placeholder-24
+# ignore-set-25
+tmp/placeholder-25
+# ignore-set-26
+tmp/placeholder-26
+# ignore-set-27
+tmp/placeholder-27
+# ignore-set-28
+tmp/placeholder-28
+# ignore-set-29
+tmp/placeholder-29
+# ignore-set-30
+tmp/placeholder-30
+# ignore-set-31
+tmp/placeholder-31
+# ignore-set-32
+tmp/placeholder-32
+# ignore-set-33
+tmp/placeholder-33
+# ignore-set-34
+tmp/placeholder-34
+# ignore-set-35
+tmp/placeholder-35
+# ignore-set-36
+tmp/placeholder-36
+# ignore-set-37
+tmp/placeholder-37
+# ignore-set-38
+tmp/placeholder-38
+# ignore-set-39
+tmp/placeholder-39
+# ignore-set-40
+tmp/placeholder-40
+# ignore-set-41
+tmp/placeholder-41
+# ignore-set-42
+tmp/placeholder-42
+# ignore-set-43
+tmp/placeholder-43
+# ignore-set-44
+tmp/placeholder-44
+# ignore-set-45
+tmp/placeholder-45
+# ignore-set-46
+tmp/placeholder-46
+# ignore-set-47
+tmp/placeholder-47
+# ignore-set-48
+tmp/placeholder-48
+# ignore-set-49
+tmp/placeholder-49
+# ignore-set-50
+tmp/placeholder-50
+# ignore-set-51
+tmp/placeholder-51
+# ignore-set-52
+tmp/placeholder-52
+# ignore-set-53
+tmp/placeholder-53
+# ignore-set-54
+tmp/placeholder-54
+# ignore-set-55
+tmp/placeholder-55
+# ignore-set-56
+tmp/placeholder-56
+# ignore-set-57
+tmp/placeholder-57
+# ignore-set-58
+tmp/placeholder-58
+# ignore-set-59
+tmp/placeholder-59
+# ignore-set-60
+tmp/placeholder-60
+# ignore-set-61
+tmp/placeholder-61
+# ignore-set-62
+tmp/placeholder-62
+# ignore-set-63
+tmp/placeholder-63
+# ignore-set-64
+tmp/placeholder-64
+# ignore-set-65
+tmp/placeholder-65
+# ignore-set-66
+tmp/placeholder-66
+# ignore-set-67
+tmp/placeholder-67
+# ignore-set-68
+tmp/placeholder-68
+# ignore-set-69
+tmp/placeholder-69
+# ignore-set-70
+tmp/placeholder-70
+# ignore-set-71
+tmp/placeholder-71
+# ignore-set-72
+tmp/placeholder-72
+# ignore-set-73
+tmp/placeholder-73
+# ignore-set-74
+tmp/placeholder-74
+# ignore-set-75
+tmp/placeholder-75
+# ignore-set-76
+tmp/placeholder-76
+# ignore-set-77
+tmp/placeholder-77
+# ignore-set-78
+tmp/placeholder-78
+# ignore-set-79
+tmp/placeholder-79
+# ignore-set-80
+tmp/placeholder-80
+# ignore-set-81
+tmp/placeholder-81
+# ignore-set-82
+tmp/placeholder-82
+# ignore-set-83
+tmp/placeholder-83
+# ignore-set-84
+tmp/placeholder-84
+# ignore-set-85
+tmp/placeholder-85
+# ignore-set-86
+tmp/placeholder-86
+# ignore-set-87
+tmp/placeholder-87
+# ignore-set-88
+tmp/placeholder-88
+# ignore-set-89
+tmp/placeholder-89
+# ignore-set-90
+tmp/placeholder-90
+# ignore-set-91
+tmp/placeholder-91
+# ignore-set-92
+tmp/placeholder-92
+# ignore-set-93
+tmp/placeholder-93
+# ignore-set-94
+tmp/placeholder-94
+# ignore-set-95
+tmp/placeholder-95
+# ignore-set-96
+tmp/placeholder-96
+# ignore-set-97
+tmp/placeholder-97
+# ignore-set-98
+tmp/placeholder-98
+# ignore-set-99
+tmp/placeholder-99
+# ignore-set-100
+tmp/placeholder-100
+# ignore-set-101
+tmp/placeholder-101
+# ignore-set-102
+tmp/placeholder-102
+# ignore-set-103
+tmp/placeholder-103
+# ignore-set-104
+tmp/placeholder-104
+# ignore-set-105
+tmp/placeholder-105
+# ignore-set-106
+tmp/placeholder-106
+# ignore-set-107
+tmp/placeholder-107
+# ignore-set-108
+tmp/placeholder-108
+# ignore-set-109
+tmp/placeholder-109
+# ignore-set-110
+tmp/placeholder-110
+# ignore-set-111
+tmp/placeholder-111
+# ignore-set-112
+tmp/placeholder-112
+# ignore-set-113
+tmp/placeholder-113
+# ignore-set-114
+tmp/placeholder-114
+# ignore-set-115
+tmp/placeholder-115
+# ignore-set-116
+tmp/placeholder-116
+# ignore-set-117
+tmp/placeholder-117
+# ignore-set-118
+tmp/placeholder-118
+# ignore-set-119
+tmp/placeholder-119
