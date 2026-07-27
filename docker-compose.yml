@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: smartwin
       POSTGRES_USER: smartwin
-      POSTGRES_PASSWORD: smartwin_dev
+      POSTGRES_PASSWORD: ${SMARTWIN_POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     healthcheck:

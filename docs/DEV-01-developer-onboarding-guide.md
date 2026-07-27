@@ -8,6 +8,7 @@
 - [ ] Validate CI pre-check locally
 
 ## Local Setup Quick Start
-1. `docker compose up -d`
-2. Read governance/process docs under `docs/`
-3. Open first onboarding issue and complete checklist
+1. `cp .env.example .env` and set local values
+2. `docker compose up -d`
+3. Read governance/process docs under `docs/`
+4. Open first onboarding issue and complete checklist
