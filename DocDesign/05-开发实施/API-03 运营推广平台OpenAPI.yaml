@@ -1,0 +1,668 @@
+openapi: 3.0.3
+info:
+  title: SmartWin Ops Platform API
+  description: |
+    SmartWin 运营平台 REST API 文档
+
+    ## 认证方式
+    - **内嵌模式**: JWT Bearer Token (`Authorization: Bearer <token>`)
+    - **独立模式**: JWT Bearer Token (ops-service 自签发)
+    - **SaaS 模式**: API Key (`X-API-Key: <api-key>`)
+
+    ## 部署模式
+    - `embedded` — 嵌入 system-service 运行
+    - `standalone` — 独立 Spring Boot 应用部署
+    - `saas` — SaaS 多租户对外服务
+
+    ## 版本
+    - v1.0.0 (2026-07-12)
+  version: 1.0.0
+  contact:
+    name: SmartWin Team
+    url: https://ops.smartwin.com
+    email: ops@smartwin.com
+
+servers:
+  - url: http://localhost:8082/api/ops
+    description: 内嵌模式 (system-service 8082)
+  - url: http://localhost:8090/api/ops
+    description: 独立模式 (ops-service 8090)
+  - url: https://ops.smartwin.com/api/ops
+    description: SaaS 模式 (生产环境)
+
+tags:
+  - name: 认证 (Auth)
+    description: 独立/SaaS 模式下的登录与 Token 管理
+  - name: 内容营销 (Content Marketing)
+    description: 博客文章、案例研究、SEO 关键词管理
+  - name: 增长指标 (Growth Metrics)
+    description: AARRR 漏斗、日活月活、获客渠道分析
+  - name: SaaS 运营 (SaaS Operations)
+    description: 租户健康度、SLA 监控、续费管理
+  - name: 计费 (Billing)
+    description: 套餐管理、账单生成、支付订单
+  - name: 支付 (Payment)
+    description: 在线支付、退款管理
+  - name: A/B 实验 (Experiment)
+    description: 实验管理、转化追踪
+  - name: Feature Flag
+    description: 功能开关管理
+  - name: KPI 目标 (KPI Target)
+    description: KPI 目标追踪
+  - name: 邮件营销 (Email Marketing)
+    description: 邮件模板、营销活动
+  - name: 推荐计划 (Referral)
+    description: 邀请码、推荐奖励
+  - name: 渠道合作 (Channel Partner)
+    description: 渠道代理商、客户推荐
+  - name: NPS/CSAT
+    description: 净推荐值、客户满意度调查
+  - name: 事件追踪 (Event Tracking)
+    description: SDK 事件上报接口
+  - name: SLA 监控
+    description: SLA 记录、事件管理
+
+paths:
+  # ==================== 认证 ====================
+  /auth/login:
+    post:
+      tags: [认证 (Auth)]
+      summary: 独立模式登录
+      description: 使用用户名/密码登录，返回 JWT Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: admin123
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiJ9...
+                  expiresIn:
+                    type: integer
+                    example: 86400
+
+  # ==================== 内容营销 ====================
+  /content/blog:
+    get:
+      tags: [内容营销 (Content Marketing)]
+      summary: 获取博客文章列表
+      parameters:
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: lang
+          in: query
+          schema: { type: string, default: zh-CN }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: 博客文章列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BlogArticle'
+                  total: { type: integer }
+    post:
+      tags: [内容营销 (Content Marketing)]
+      summary: 创建博客文章
+      security: [{ bearerAuth: [] }, { apiKeyAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogArticleCreate'
+      responses:
+        '200':
+          description: 创建成功
+
+  /content/blog/{slug}:
+    get:
+      tags: [内容营销 (Content Marketing)]
+      summary: 获取单篇博客文章
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 博客文章详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogArticle'
+
+  /content/cases:
+    get:
+      tags: [内容营销 (Content Marketing)]
+      summary: 获取案例研究列表
+      parameters:
+        - name: industry
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: 案例研究列表
+
+  /content/seo/keywords:
+    get:
+      tags: [内容营销 (Content Marketing)]
+      summary: 获取 SEO 关键词排名
+      parameters:
+        - name: lang
+          in: query
+          schema: { type: string, default: zh-CN }
+      responses:
+        '200':
+          description: SEO 关键词列表
+
+  # ==================== 增长指标 ====================
+  /growth/daily-metrics:
+    get:
+      tags: [增长指标 (Growth Metrics)]
+      summary: 获取每日增长指标
+      parameters:
+        - name: startDate
+          in: query
+          schema: { type: string, format: date }
+        - name: endDate
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: 每日增长指标列表
+
+  /growth/funnel:
+    get:
+      tags: [增长指标 (Growth Metrics)]
+      summary: 获取 AARRR 转化漏斗
+      responses:
+        '200':
+          description: AARRR 漏斗数据
+
+  /growth/channels:
+    get:
+      tags: [增长指标 (Growth Metrics)]
+      summary: 获取获客渠道分析
+      parameters:
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: 渠道分析数据
+
+  # ==================== SaaS 运营 ====================
+  /saas/tenants:
+    get:
+      tags: [SaaS 运营 (SaaS Operations)]
+      summary: 获取租户运营信息列表
+      responses:
+        '200':
+          description: 租户运营信息
+
+  /saas/tenants/{tenantId}/health:
+    get:
+      tags: [SaaS 运营 (SaaS Operations)]
+      summary: 获取租户健康度
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 租户健康度详情
+
+  /saas/sla/records:
+    get:
+      tags: [SLA 监控]
+      summary: 获取 SLA 记录
+      parameters:
+        - name: tenantId
+          in: query
+          schema: { type: string }
+        - name: startDate
+          in: query
+          schema: { type: string, format: date }
+        - name: endDate
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: SLA 记录列表
+
+  # ==================== 计费 ====================
+  /billing/plans:
+    get:
+      tags: [计费 (Billing)]
+      summary: 获取套餐列表
+      responses:
+        '200':
+          description: 套餐列表
+
+  /billing/invoices:
+    get:
+      tags: [计费 (Billing)]
+      summary: 获取账单列表
+      parameters:
+        - name: tenantId
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [PENDING, PAID, OVERDUE, CANCELLED] }
+      responses:
+        '200':
+          description: 账单列表
+
+  /billing/invoices/{id}:
+    get:
+      tags: [计费 (Billing)]
+      summary: 获取账单详情
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: 账单详情
+
+  # ==================== 支付 ====================
+  /payment/orders:
+    post:
+      tags: [支付 (Payment)]
+      summary: 创建支付订单
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [invoiceId, paymentChannel]
+              properties:
+                invoiceId: { type: integer }
+                paymentChannel:
+                  type: string
+                  enum: [ALIPAY, WECHAT, BANK_TRANSFER]
+      responses:
+        '200':
+          description: 支付订单创建成功
+
+  /payment/orders/{orderNo}:
+    get:
+      tags: [支付 (Payment)]
+      summary: 查询支付订单状态
+      parameters:
+        - name: orderNo
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 支付订单详情
+
+  /payment/callback/{channel}:
+    post:
+      tags: [支付 (Payment)]
+      summary: 支付回调（支付宝/微信）
+      parameters:
+        - name: channel
+          in: path
+          required: true
+          schema: { type: string, enum: [ALIPAY, WECHAT] }
+      responses:
+        '200':
+          description: 回调处理成功
+
+  # ==================== A/B 实验 ====================
+  /experiments:
+    get:
+      tags: [A/B 实验 (Experiment)]
+      summary: 获取实验列表
+      responses:
+        '200':
+          description: 实验列表
+    post:
+      tags: [A/B 实验 (Experiment)]
+      summary: 创建实验
+      security: [{ bearerAuth: [] }, { apiKeyAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                experimentName: { type: string }
+                description: { type: string }
+      responses:
+        '200':
+          description: 创建成功
+
+  /experiments/{id}/conversion:
+    post:
+      tags: [A/B 实验 (Experiment)]
+      summary: 上报实验转化
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: 转化上报成功
+
+  # ==================== Feature Flag ====================
+  /feature-flags:
+    get:
+      tags: [Feature Flag]
+      summary: 获取功能开关列表
+      responses:
+        '200':
+          description: 功能开关列表
+
+  /feature-flags/{flagKey}:
+    get:
+      tags: [Feature Flag]
+      summary: 获取单个功能开关
+      parameters:
+        - name: flagKey
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 功能开关详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+
+  /feature-flags/{flagKey}/toggle:
+    post:
+      tags: [Feature Flag]
+      summary: 切换功能开关状态
+      security: [{ bearerAuth: [] }, { apiKeyAuth: [] }]
+      parameters:
+        - name: flagKey
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled: { type: boolean }
+      responses:
+        '200':
+          description: 切换成功
+
+  # ==================== KPI 目标 ====================
+  /kpi/targets:
+    get:
+      tags: [KPI 目标 (KPI Target)]
+      summary: 获取 KPI 目标列表
+      responses:
+        '200':
+          description: KPI 目标列表
+
+  # ==================== 邮件营销 ====================
+  /email/templates:
+    get:
+      tags: [邮件营销 (Email Marketing)]
+      summary: 获取邮件模板列表
+      responses:
+        '200':
+          description: 邮件模板列表
+
+  /email/campaigns:
+    get:
+      tags: [邮件营销 (Email Marketing)]
+      summary: 获取营销活动列表
+      responses:
+        '200':
+          description: 营销活动列表
+    post:
+      tags: [邮件营销 (Email Marketing)]
+      summary: 创建营销活动
+      security: [{ bearerAuth: [] }, { apiKeyAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaignName: { type: string }
+                templateId: { type: integer }
+                targetSegment: { type: string }
+      responses:
+        '200':
+          description: 创建成功
+
+  # ==================== 推荐计划 ====================
+  /referral/invitation-codes:
+    post:
+      tags: [推荐计划 (Referral)]
+      summary: 生成邀请码
+      security: [{ bearerAuth: [] }, { apiKeyAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inviterUserId: { type: integer }
+                rewardType:
+                  type: string
+                  enum: [EXTEND_DAYS, CREDIT, DISCOUNT]
+                  default: EXTEND_DAYS
+                rewardValue: { type: integer, default: 7 }
+                maxUses: { type: integer, default: 1 }
+      responses:
+        '200':
+          description: 邀请码生成成功
+
+  /referral/invitation-codes/{code}/redeem:
+    post:
+      tags: [推荐计划 (Referral)]
+      summary: 兑换邀请码
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inviteeUserId: { type: integer }
+      responses:
+        '200':
+          description: 兑换成功
+
+  # ==================== 渠道合作 ====================
+  /channel/partners:
+    get:
+      tags: [渠道合作 (Channel Partner)]
+      summary: 获取渠道代理商列表
+      responses:
+        '200':
+          description: 代理商列表
+    post:
+      tags: [渠道合作 (Channel Partner)]
+      summary: 注册渠道代理商
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                partnerName: { type: string }
+                partnerType: { type: string, enum: [STANDARD, PREMIUM, STRATEGIC] }
+                contactName: { type: string }
+                contactPhone: { type: string }
+                contactEmail: { type: string }
+                commissionRate: { type: number, format: float }
+      responses:
+        '200':
+          description: 注册成功
+
+  # ==================== NPS/CSAT ====================
+  /nps:
+    post:
+      tags: [NPS/CSAT]
+      summary: 提交 NPS 评分
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [score]
+              properties:
+                score: { type: integer, minimum: 0, maximum: 10 }
+                userId: { type: string }
+                comment: { type: string }
+      responses:
+        '200':
+          description: 提交成功
+
+  /csat:
+    post:
+      tags: [NPS/CSAT]
+      summary: 提交 CSAT 满意度
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [score]
+              properties:
+                score: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string }
+      responses:
+        '200':
+          description: 提交成功
+
+  # ==================== 事件追踪 ====================
+  /events/track:
+    post:
+      tags: [事件追踪 (Event Tracking)]
+      summary: SDK 事件批量上报
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                events:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      eventName: { type: string }
+                      userId: { type: string }
+                      properties: { type: object }
+                      timestamp: { type: integer }
+      responses:
+        '200':
+          description: 上报成功
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    BlogArticle:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        title: { type: string }
+        category: { type: string }
+        summary: { type: string }
+        content: { type: string }
+        author: { type: string }
+        lang: { type: string }
+        status: { type: string, enum: [DRAFT, PUBLISHED, ARCHIVED] }
+        publishDate: { type: string, format: date }
+        tags: { type: string }
+        readTime: { type: integer }
+
+    BlogArticleCreate:
+      type: object
+      required: [slug, title]
+      properties:
+        slug: { type: string }
+        title: { type: string }
+        category: { type: string }
+        summary: { type: string }
+        content: { type: string }
+        author: { type: string }
+        lang: { type: string, default: zh-CN }
+        tags: { type: string }
+
+    FeatureFlag:
+      type: object
+      properties:
+        flagKey: { type: string }
+        label: { type: string }
+        description: { type: string }
+        enabled: { type: boolean }
+        rolloutPercentage: { type: integer }
+        targetedUserIds: { type: string }
+        tenantId: { type: integer }

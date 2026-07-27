@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartWin SmartWin智赢平台 — AI原生数据治理与AI治理平台 | 系统网站设计方案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --accent: #8b5cf6;
+            --accent-light: #ede9fe;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --gray: #64748b;
+            --gray-light: #f1f5f9;
+            --gray-border: #e2e8f0;
+            --white: #ffffff;
+            --gradient-1: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+            --gradient-2: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --gradient-hero: linear-gradient(135deg, #1e293b 0%, #0f172a 30%, #1e1b4b 70%, #312e81 100%);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --shadow-glow: 0 0 40px rgba(37,99,235,0.15);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--white);
+            color: var(--dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ===== Navigation ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--gray-border);
+            transition: all 0.3s;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow-md); }
+        .nav-container {
+            max-width: 1280px; margin: 0 auto;
+            padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 64px;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; color: var(--dark); text-decoration: none; }
+        .nav-logo-icon {
+            width: 36px; height: 36px;
+            background: var(--gradient-1);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 18px; font-weight: 800;
+        }
+        .nav-logo span { background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-menu { display: flex; gap: 32px; list-style: none; }
+        .nav-menu a {
+            text-decoration: none; color: var(--dark-3); font-size: 14px; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-menu a:hover { color: var(--primary); }
+        .nav-actions { display: flex; gap: 12px; align-items: center; }
+        .btn {
+            padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+            transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .btn-ghost { color: var(--dark-3); background: transparent; }
+        .btn-ghost:hover { background: var(--gray-light); }
+        .btn-primary { background: var(--gradient-1); color: #fff; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        .btn-outline { border: 1.5px solid var(--gray-border); color: var(--dark); background: transparent; }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 10px; }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            background: var(--gradient-hero);
+            min-height: 100vh;
+            display: flex; align-items: center;
+            position: relative; overflow: hidden;
+            padding-top: 64px;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; right: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: -30%; left: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-container {
+            max-width: 1280px; margin: 0 auto; padding: 0 24px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+            align-items: center; position: relative; z-index: 1;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(139,92,246,0.15); color: #c4b5fd;
+            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+            margin-bottom: 24px;
+            border: 1px solid rgba(139,92,246,0.3);
+        }
+        .hero h1 {
+            font-size: 48px; font-weight: 800; color: #fff;
+            line-height: 1.2; margin-bottom: 20px;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #60a5fa, #c4b5fd);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 17px; color: #94a3b8; line-height: 1.8;
+            margin-bottom: 32px;
+        }
+        .hero-actions { display: flex; gap: 16px; margin-bottom: 48px; }
+        .hero-stats { display: flex; gap: 40px; }
+        .hero-stat-val { font-size: 32px; font-weight: 800; color: #fff; }
+        .hero-stat-label { font-size: 13px; color: #64748b; }
+        .hero-visual {
+            position: relative;
+        }
+        .hero-card {
+            background: rgba(30,41,59,0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148,163,184,0.1);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+        .hero-card-title { color: #e2e8f0; font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .hero-card-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(148,163,184,0.1); }
+        .hero-card-row:last-child { border-bottom: none; }
+        .hero-card-label { color: #94a3b8; font-size: 13px; }
+        .hero-card-val { color: #4ade80; font-size: 13px; font-weight: 700; }
+        .hero-card-bar { width: 60px; height: 4px; background: rgba(148,163,184,0.2); border-radius: 2px; overflow: hidden; }
+        .hero-card-bar-fill { height: 100%; background: var(--gradient-1); border-radius: 2px; }
+
+        /* ===== Section Common ===== */
+        .section { padding: 100px 0; }
+        .section-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-tag {
+            display: inline-block;
+            background: var(--primary-light); color: var(--primary);
+            padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .section-title { font-size: 36px; font-weight: 800; color: var(--dark); margin-bottom: 12px; }
+        .section-desc { font-size: 16px; color: var(--gray); max-width: 700px; margin: 0 auto; }
+
+        /* ===== Features Section ===== */
+        .features { background: var(--gray-light); }
+        .feature-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+        }
+        .feature-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            border: 1px solid var(--gray-border);
+        }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary-light); }
+        .feature-icon {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 20px;
+        }
+        .feature-icon.blue { background: var(--primary-light); }
+        .feature-icon.purple { background: var(--accent-light); }
+        .feature-icon.green { background: var(--success-light); }
+        .feature-icon.orange { background: #fef3c7; }
+        .feature-icon.cyan { background: #cffafe; }
+        .feature-icon.pink { background: #fce7f3; }
+        .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .feature-card p { font-size: 14px; color: var(--gray); line-height: 1.7; }
+        .feature-tag {
+            display: inline-block; margin-top: 12px;
+            font-size: 12px; font-weight: 600; color: var(--primary);
+            background: var(--primary-light); padding: 2px 10px; border-radius: 4px;
+        }
+
+        /* ===== Products Section ===== */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .product-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-border);
+            background: var(--white);
+        }
+        .product-header { padding: 32px; color: #fff; }
+        .product-header.smartwin { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); }
+        .product-header.smartchain { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+        .product-header h3 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+        .product-header p { font-size: 14px; opacity: 0.9; }
+        .product-body { padding: 32px; }
+        .product-body h4 { font-size: 14px; font-weight: 700; color: var(--gray); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .product-feature-list { list-style: none; margin-bottom: 24px; }
+        .product-feature-list li {
+            padding: 8px 0; font-size: 14px; color: var(--dark-3);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .product-feature-list li::before { content: '✓'; color: var(--success); font-weight: 700; }
+
+        /* ===== Architecture Section ===== */
+        .arch-section { background: var(--gradient-2); color: #fff; }
+        .arch-section .section-title { color: #fff; }
+        .arch-section .section-desc { color: #94a3b8; }
+        .arch-diagram {
+            background: rgba(30,41,59,0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148,163,184,0.1);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-top: 40px;
+        }
+        .arch-layer { margin-bottom: 20px; }
+        .arch-layer-title { font-size: 13px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .arch-layer-boxes { display: flex; gap: 12px; flex-wrap: wrap; }
+        .arch-box {
+            background: rgba(148,163,184,0.1);
+            border: 1px solid rgba(148,163,184,0.2);
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 13px; font-weight: 600; color: #e2e8f0;
+            text-align: center; flex: 1; min-width: 120px;
+            transition: all 0.2s;
+        }
+        .arch-box:hover { background: rgba(37,99,235,0.2); border-color: var(--primary); }
+        .arch-box.accent { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.3); color: #c4b5fd; }
+        .arch-divider { height: 1px; background: rgba(148,163,184,0.1); margin: 16px 0; }
+
+        /* ===== Stats Section ===== */
+        .stats { background: var(--white); }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+        }
+        .stat-card {
+            text-align: center; padding: 32px 20px;
+            border-radius: var(--radius);
+            background: var(--gray-light);
+            transition: all 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); background: var(--white); }
+        .stat-icon { font-size: 36px; margin-bottom: 12px; }
+        .stat-value { font-size: 36px; font-weight: 800; color: var(--dark); margin-bottom: 4px; }
+        .stat-label { font-size: 14px; color: var(--gray); }
+
+        /* ===== Use Cases Section ===== */
+        .usecase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .usecase-card {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-border);
+            background: var(--white);
+            transition: all 0.3s;
+        }
+        .usecase-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .usecase-icon-area { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+        .usecase-icon-area.finance { background: linear-gradient(135deg, #1e3a5f, #2563eb); }
+        .usecase-icon-area.gov { background: linear-gradient(135deg, #166534, #16a34a); }
+        .usecase-icon-area.manufacturing { background: linear-gradient(135deg, #92400e, #f59e0b); }
+        .usecase-icon-area.healthcare { background: linear-gradient(135deg, #831843, #ec4899); }
+        .usecard-body { padding: 20px; }
+        .usecard-body h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .usecard-body p { font-size: 13px; color: var(--gray); }
+
+        /* ===== Pricing Section ===== */
+        .pricing { background: var(--gray-light); }
+        .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .pricing-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--gray-border);
+            transition: all 0.3s;
+            position: relative;
+        }
+        .pricing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .pricing-card.featured { border-color: var(--primary); box-shadow: var(--shadow-glow); }
+        .pricing-badge {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--gradient-1); color: #fff;
+            padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+        }
+        .pricing-name { font-size: 16px; font-weight: 700; color: var(--gray); margin-bottom: 8px; }
+        .pricing-price { font-size: 36px; font-weight: 800; color: var(--dark); margin-bottom: 4px; }
+        .pricing-period { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
+        .pricing-features { list-style: none; text-align: left; margin-bottom: 24px; }
+        .pricing-features li { padding: 6px 0; font-size: 13px; color: var(--dark-3); display: flex; align-items: center; gap: 6px; }
+        .pricing-features li::before { content: '✓'; color: var(--success); font-weight: 700; font-size: 14px; }
+        .pricing-features li.disabled { color: var(--gray); }
+        .pricing-features li.disabled::before { content: '✕'; color: var(--gray); }
+
+        /* ===== CTA Section ===== */
+        .cta {
+            background: var(--gradient-hero);
+            padding: 80px 0;
+            text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .cta::before {
+            content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 400px;
+            background: radial-gradient(ellipse, rgba(139,92,246,0.15) 0%, transparent 70%);
+        }
+        .cta-container { max-width: 700px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        .cta h2 { font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+        .cta p { font-size: 16px; color: #94a3b8; margin-bottom: 32px; }
+        .cta-actions { display: flex; gap: 16px; justify-content: center; }
+
+        /* ===== Footer ===== */
+        .footer { background: var(--dark); color: #94a3b8; padding: 60px 0 30px; }
+        .footer-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-brand h3 { color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .footer-brand p { font-size: 13px; line-height: 1.8; }
+        .footer-col h4 { color: #e2e8f0; font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 8px; }
+        .footer-col a { color: #94a3b8; text-decoration: none; font-size: 13px; transition: color 0.2s; }
+        .footer-col a:hover { color: #fff; }
+        .footer-bottom { border-top: 1px solid rgba(148,163,184,0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .footer-social { display: flex; gap: 12px; }
+        .footer-social a { width: 32px; height: 32px; background: rgba(148,163,184,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #94a3b8; text-decoration: none; transition: all 0.2s; }
+        .footer-social a:hover { background: var(--primary); color: #fff; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .hero-container, .product-grid { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid, .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+            .usecase-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .nav-menu { display: none; }
+        }
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 32px; }
+            .feature-grid, .stats-grid, .pricing-grid, .usecase-grid { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; gap: 16px; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== Navbar ===== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="#" class="nav-logo">
+            <div class="nav-logo-icon">S</div>
+            <span>SmartWin</span>
+        </a>
+        <ul class="nav-menu">
+            <li><a href="#products">产品</a></li>
+            <li><a href="#features">核心能力</a></li>
+            <li><a href="#architecture">技术架构</a></li>
+            <li><a href="#usecases">行业方案</a></li>
+            <li><a href="#pricing">定价</a></li>
+            <li><a href="#docs">文档</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="#" class="btn btn-ghost">登录</a>
+            <a href="#" class="btn btn-primary">免费试用</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="hero">
+    <div class="hero-container">
+        <div>
+            <div class="hero-badge">🚀 V1.0 全量发布 · Sprint 1-30 全部完成</div>
+            <h1>AI原生<span class="highlight">数据治理</span>与<br><span class="highlight">AI治理</span>一体化平台</h1>
+            <p>SmartWin SmartWin智赢平台 — 融合 Agentic 治理、大模型私有化、多模态 AI、零信任安全、数据要素交易、实时流处理，为企业打造从数据到 AI 的全链路智能治理闭环。</p>
+            <div class="hero-actions">
+                <a href="#" class="btn btn-primary btn-lg">立即体验 →</a>
+                <a href="#architecture" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.2);">查看架构</a>
+            </div>
+            <div class="hero-stats">
+                <div>
+                    <div class="hero-stat-val">257+</div>
+                    <div class="hero-stat-label">已交付任务</div>
+                </div>
+                <div>
+                    <div class="hero-stat-val">260+</div>
+                    <div class="hero-stat-label">API 端点</div>
+                </div>
+                <div>
+                    <div class="hero-stat-val">15</div>
+                    <div class="hero-stat-label">国际化语言</div>
+                </div>
+                <div>
+                    <div class="hero-stat-val">99.9%</div>
+                    <div class="hero-stat-label">SLA 可用性</div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card">
+                <div class="hero-card-title">📊 平台实时概览</div>
+                <div class="hero-card-row">
+                    <span class="hero-card-label">数据质量评分</span>
+                    <span class="hero-card-val">98.5%</span>
+                    <div class="hero-card-bar"><div class="hero-card-bar-fill" style="width:98%;"></div></div>
+                </div>
+                <div class="hero-card-row">
+                    <span class="hero-card-label">AI 模型推理 QPS</span>
+                    <span class="hero-card-val">12,500</span>
+                    <div class="hero-card-bar"><div class="hero-card-bar-fill" style="width:85%;"></div></div>
+                </div>
+                <div class="hero-card-row">
+                    <span class="hero-card-label">Agentic 治理闭环</span>
+                    <span class="hero-card-val">运行中</span>
+                    <div class="hero-card-bar"><div class="hero-card-bar-fill" style="width:100%;"></div></div>
+                </div>
+                <div class="hero-card-row">
+                    <span class="hero-card-label">零信任评分</span>
+                    <span class="hero-card-val">92.3</span>
+                    <div class="hero-card-bar"><div class="hero-card-bar-fill" style="width:92%;"></div></div>
+                </div>
+                <div class="hero-card-row">
+                    <span class="hero-card-label">GPU 利用率</span>
+                    <span class="hero-card-val">76.8%</span>
+                    <div class="hero-card-bar"><div class="hero-card-bar-fill" style="width:77%;"></div></div>
+                </div>
+                <div class="hero-card-row">
+                    <span class="hero-card-label">租户健康度</span>
+                    <span class="hero-card-val">健康</span>
+                    <div class="hero-card-bar"><div class="hero-card-bar-fill" style="width:95%;"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Core Features ===== -->
+<section class="section features" id="features">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">核心能力</span>
+            <h2 class="section-title">六大核心能力引擎</h2>
+            <p class="section-desc">从数据治理到 AI 治理，从安全架构到商业化运营，全栈覆盖企业智能化转型需求</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon blue">🤖</div>
+                <h3>Agentic 治理引擎</h3>
+                <p>AI Agent 全流程自动化治理：感知异常 → 自主决策 → 自动执行 → 效果验证 → 持续学习，覆盖数据质量、安全、性能、成本四大场景。</p>
+                <span class="feature-tag">Sprint 27 交付</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon purple">🧠</div>
+                <h3>大模型私有化部署</h3>
+                <p>支持 vLLM / Ollama 双引擎，GPU 资源池管理，量化推理 (AWQ/GPTQ/GGUF)，热切换零停机，弹性伸缩，Prefix Caching 加速。</p>
+                <span class="feature-tag">Sprint 27 交付</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green">🎬</div>
+                <h3>多模态 AI 推理</h3>
+                <p>文本、图像、音频、视频、代码五模态统一处理，CLIP 跨模态嵌入，VQA 视觉问答，图文匹配，文生图。</p>
+                <span class="feature-tag">Sprint 28 交付</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon orange">⚡</div>
+                <h3>Flink 实时流处理</h3>
+                <p>Kafka → Flink DAG → 多 Sink 实时管道，CEP 复杂事件处理，流式 AI 推理，Checkpoint/Savepoint 容错，Exactly-Once 语义。</p>
+                <span class="feature-tag">Sprint 27 交付</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon cyan">🛡️</div>
+                <h3>零信任安全架构</h3>
+                <p>五维信任评分 (身份/设备/网络/行为/数据)，自适应决策，4 条默认策略，MFA + 设备指纹 + 行为生物特征，永不信任始终验证。</p>
+                <span class="feature-tag">Sprint 28 交付</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon pink">💱</div>
+                <h3>数据要素交易</h3>
+                <p>数据资产登记、自动定价、交易撮合、MPC 隐私计算 (可用不可见)、区块链存证、合规审查 (数据安全法/个保法/数据出境)。</p>
+                <span class="feature-tag">Sprint 28 交付</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Products ===== -->
+<section class="section" id="products">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">产品矩阵</span>
+            <h2 class="section-title">双产品一体化平台</h2>
+            <p class="section-desc">智赢 (数据治理) + 智链 (AI 模型治理)，数据与 AI 治理一体化协同</p>
+        </div>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-header smartwin">
+                    <h3>智赢 SmartWin</h3>
+                    <p>AI 原生数据治理平台</p>
+                </div>
+                <div class="product-body">
+                    <h4>核心模块</h4>
+                    <ul class="product-feature-list">
+                        <li>数据目录 — 全局数据资产发现与搜索</li>
+                        <li>元数据管理 — 自动采集与技术/业务元数据</li>
+                        <li>数据质量 — AI 驱动的质量规则与自动修复</li>
+                        <li>数据标准 — 字典/映射/标准化</li>
+                        <li>数据血缘 — 自动解析与影响分析</li>
+                        <li>主数据管理 — MDM 统一视图</li>
+                        <li>生命周期 — 数据归档与销毁策略</li>
+                        <li>数据服务 — API 化数据发布与订阅</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-header smartchain">
+                    <h3>智链 SmartChain</h3>
+                    <p>AI 模型治理与监控平台</p>
+                </div>
+                <div class="product-body">
+                    <h4>核心模块</h4>
+                    <ul class="product-feature-list">
+                        <li>模型管理 — 大模型注册/版本/部署/路由</li>
+                        <li>应用管理 — AI 应用全生命周期</li>
+                        <li>Agent 管理 — AI Agent 编排与执行</li>
+                        <li>成本管控 — Token 计量与模型降级</li>
+                        <li>风险管控 — AI 安全检测与阻断</li>
+                        <li>Prompt 管理 — 提示词模板与版本</li>
+                        <li>AI 安全引擎 — Python 检测+评测+代理</li>
+                        <li>AI Copilot — 智能运维/代码/数据助手</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Architecture ===== -->
+<section class="section arch-section" id="architecture">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag" style="background:rgba(139,92,246,0.2);color:#c4b5fd;">技术架构</span>
+            <h2 class="section-title">云原生微服务架构</h2>
+            <p class="section-desc">Spring Cloud 微服务 + K8s 容器编排 + Istio 服务网格 + 信创原生适配</p>
+        </div>
+        <div class="arch-diagram">
+            <div class="arch-layer">
+                <div class="arch-layer-title">🌐 接入层</div>
+                <div class="arch-layer-boxes">
+                    <div class="arch-box">Web 前端 (108页)</div>
+                    <div class="arch-box">移动端 App</div>
+                    <div class="arch-box">开放 API 网关</div>
+                    <div class="arch-box">AI Copilot</div>
+                </div>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-layer">
+                <div class="arch-layer-title">🔗 应用层 — 智链 + 智数</div>
+                <div class="arch-layer-boxes">
+                    <div class="arch-box accent">Agentic 治理</div>
+                    <div class="arch-box accent">大模型私有化</div>
+                    <div class="arch-box accent">多模态 AI</div>
+                    <div class="arch-box accent">AI Copilot</div>
+                    <div class="arch-box accent">数据交易</div>
+                    <div class="arch-box accent">Flink 流处理</div>
+                </div>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-layer">
+                <div class="arch-layer-title">⚙️ 平台服务层 — 16 微服务</div>
+                <div class="arch-layer-boxes">
+                    <div class="arch-box">Auth</div>
+                    <div class="arch-box">System</div>
+                    <div class="arch-box">Security</div>
+                    <div class="arch-box">Audit</div>
+                    <div class="arch-box">Dashboard</div>
+                    <div class="arch-box">Config</div>
+                    <div class="arch-box">Notification</div>
+                    <div class="arch-box">Agent</div>
+                    <div class="arch-box">App</div>
+                    <div class="arch-box">Cost</div>
+                    <div class="arch-box">Model</div>
+                </div>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-layer">
+                <div class="arch-layer-title">🧩 公共组件层 — 8 模块</div>
+                <div class="arch-layer-boxes">
+                    <div class="arch-box">common-util</div>
+                    <div class="arch-box">common-db</div>
+                    <div class="arch-box">common-security</div>
+                    <div class="arch-box">common-mq</div>
+                    <div class="arch-box">common-storage</div>
+                    <div class="arch-box">common-ai</div>
+                    <div class="arch-box">common-crypto-gm</div>
+                    <div class="arch-box">common-xinchuang</div>
+                </div>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-layer">
+                <div class="arch-layer-title">💾 基础设施层</div>
+                <div class="arch-layer-boxes">
+                    <div class="arch-box">DM8 / 金仓 / openGauss</div>
+                    <div class="arch-box">Redis 集群</div>
+                    <div class="arch-box">Elasticsearch</div>
+                    <div class="arch-box">Kafka</div>
+                    <div class="arch-box">MinIO</div>
+                    <div class="arch-box">Neo4j</div>
+                    <div class="arch-box">GPU A100×8</div>
+                </div>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-layer">
+                <div class="arch-layer-title">🔐 安全与信创</div>
+                <div class="arch-layer-boxes">
+                    <div class="arch-box accent">零信任引擎</div>
+                    <div class="arch-box accent">国密 SM2/3/4/9</div>
+                    <div class="arch-box accent">等保 2.0</div>
+                    <div class="arch-box accent">信创认证 (8项)</div>
+                    <div class="arch-box accent">UOS / 麒麟</div>
+                    <div class="arch-box accent">鲲鹏 / 飞腾</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Stats ===== -->
+<section class="section stats" id="stats">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">项目度量</span>
+            <h2 class="section-title">用数据说话</h2>
+            <p class="section-desc">V1.0 全量交付的数字化成果</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💻</div>
+                <div class="stat-value">100K+</div>
+                <div class="stat-label">代码行数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔌</div>
+                <div class="stat-value">260+</div>
+                <div class="stat-label">API 端点数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏗️</div>
+                <div class="stat-value">16</div>
+                <div class="stat-label">微服务数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-value">108</div>
+                <div class="stat-label">前端页面</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🧪</div>
+                <div class="stat-value">420+</div>
+                <div class="stat-label">测试用例</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-value">15</div>
+                <div class="stat-label">国际化语言</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">☁️</div>
+                <div class="stat-value">3</div>
+                <div class="stat-label">多云部署</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏁</div>
+                <div class="stat-value">30/30</div>
+                <div class="stat-label">Sprint 完成率</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Use Cases ===== -->
+<section class="section" id="usecases" style="background:var(--gray-light);">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">行业方案</span>
+            <h2 class="section-title">垂直行业解决方案</h2>
+            <p class="section-desc">面向四大核心行业的数据与 AI 治理方案 (V2.0 Sprint 31 规划中)</p>
+        </div>
+        <div class="usecase-grid">
+            <div class="usecase-card">
+                <div class="usecase-icon-area finance">🏦</div>
+                <div class="usecard-body">
+                    <h4>金融行业</h4>
+                    <p>风控建模、反洗钱、监管报送、数据治理、合规审计</p>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-icon-area gov">🏛️</div>
+                <div class="usecard-body">
+                    <h4>政务行业</h4>
+                    <p>政务数据目录、共享交换、安全审计、一网通办</p>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-icon-area manufacturing">🏭</div>
+                <div class="usecard-body">
+                    <h4>制造行业</h4>
+                    <p>设备数据治理、预测性维护、供应链协同、质量追溯</p>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-icon-area healthcare">🏥</div>
+                <div class="usecard-body">
+                    <h4>医疗行业</h4>
+                    <p>病历数据治理、辅助诊断、隐私计算、药械追溯</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Pricing ===== -->
+<section class="section pricing" id="pricing">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">定价方案</span>
+            <h2 class="section-title">灵活的定价模式</h2>
+            <p class="section-desc">私有化部署 + SaaS 订阅 + 开放 API 按量计费</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-name">免费版</div>
+                <div class="pricing-price">¥0</div>
+                <div class="pricing-period">永久免费</div>
+                <ul class="pricing-features">
+                    <li>1 个租户</li>
+                    <li>基础数据治理</li>
+                    <li>API 调用 1,000 次/月</li>
+                    <li>社区支持</li>
+                    <li class="disabled">大模型私有化</li>
+                    <li class="disabled">Agentic 治理</li>
+                </ul>
+                <a href="#" class="btn btn-outline" style="width:100%;justify-content:center;">开始使用</a>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-name">基础版</div>
+                <div class="pricing-price">¥9,800</div>
+                <div class="pricing-period">/月</div>
+                <ul class="pricing-features">
+                    <li>5 个租户</li>
+                    <li>全量数据治理模块</li>
+                    <li>API 调用 50,000 次/月</li>
+                    <li>AI 模型管理</li>
+                    <li>邮件+工单支持</li>
+                    <li class="disabled">大模型私有化</li>
+                </ul>
+                <a href="#" class="btn btn-outline" style="width:100%;justify-content:center;">选择方案</a>
+            </div>
+            <div class="pricing-card featured">
+                <div class="pricing-badge">推荐</div>
+                <div class="pricing-name">专业版</div>
+                <div class="pricing-price">¥29,800</div>
+                <div class="pricing-period">/月</div>
+                <ul class="pricing-features">
+                    <li>不限租户</li>
+                    <li>全量模块 + AIOps</li>
+                    <li>API 调用 500,000 次/月</li>
+                    <li>大模型私有化部署</li>
+                    <li>Agentic 治理引擎</li>
+                    <li>7×24 电话支持</li>
+                </ul>
+                <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">选择方案</a>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-name">企业版</div>
+                <div class="pricing-price">定制</div>
+                <div class="pricing-period">私有化部署</div>
+                <ul class="pricing-features">
+                    <li>不限租户 + 专属集群</li>
+                    <li>全量模块 + 行业方案包</li>
+                    <li>不限 API 调用</li>
+                    <li>多模态 AI + GPU 资源池</li>
+                    <li>零信任安全 + 信创适配</li>
+                    <li>专属架构师 + SLA 99.9%</li>
+                </ul>
+                <a href="#" class="btn btn-outline" style="width:100%;justify-content:center;">联系销售</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta">
+    <div class="cta-container">
+        <h2>开启智能治理之旅</h2>
+        <p>30 秒注册，立即体验 AI 原生数据治理与 AI 治理一体化平台</p>
+        <div class="cta-actions">
+            <a href="#" class="btn btn-primary btn-lg">免费试用</a>
+            <a href="#" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.2);">预约演示</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>
+                    <div class="nav-logo-icon" style="width:32px;height:32px;font-size:16px;">S</div>
+                    SmartWin SmartWin智赢平台
+                </h3>
+                <p>AI 原生数据治理与 AI 治理一体化平台<br>让数据治理智能化 · AI 治理标准化<br>助力企业实现数据与 AI 的合规、安全、高效运营</p>
+            </div>
+            <div class="footer-col">
+                <h4>产品</h4>
+                <ul>
+                    <li><a href="#">智赢数据治理</a></li>
+                    <li><a href="#">智链 AI 治理</a></li>
+                    <li><a href="#">Agentic 治理</a></li>
+                    <li><a href="#">大模型私有化</a></li>
+                    <li><a href="#">AI Copilot</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>解决方案</h4>
+                <ul>
+                    <li><a href="#">金融行业</a></li>
+                    <li><a href="#">政务行业</a></li>
+                    <li><a href="#">制造行业</a></li>
+                    <li><a href="#">医疗行业</a></li>
+                    <li><a href="#">信创适配</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>开发者</h4>
+                <ul>
+                    <li><a href="#">API 文档</a></li>
+                    <li><a href="#">SDK 下载</a></li>
+                    <li><a href="#">开放 API 市场</a></li>
+                    <li><a href="#">插件开发</a></li>
+                    <li><a href="#">开源社区</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>关于</h4>
+                <ul>
+                    <li><a href="#">关于我们</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">合作伙伴</a></li>
+                    <li><a href="#">招贤纳士</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 SmartWin Platform. All rights reserved. V1.0 · Sprint 1-30 全部完成</span>
+            <div class="footer-social">
+                <a href="#">微</a>
+                <a href="#">知</a>
+                <a href="#">GI</a>
+                <a href="#">✉</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 20) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+</script>
+
+</body>
+</html>
