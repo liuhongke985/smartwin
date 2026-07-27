@@ -1,0 +1,16 @@
+project:
+  name: SmartWin AI Governance Platform
+  phase: "Phase 1 - Project Startup & Team Assembly"
+  timeline:
+    start_week: W1
+    end_week: W2
+  objectives:
+    - Establish project organization and governance
+    - Complete team assembly and onboarding
+    - Prepare local development environment and CI/CD baseline
+
+acceptance_criteria:
+  - Project charter approved and signed
+  - Core team onboarded (80%+)
+  - Development environment works for all team members
+  - CI pipeline runs basic validation successfully

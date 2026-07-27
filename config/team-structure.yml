@@ -1,0 +1,21 @@
+pmc:
+  chair: Project Manager
+  members:
+    - Tech Lead (Backend)
+    - Tech Lead (Frontend)
+    - DevOps Engineer
+    - QA Lead
+
+sub_teams:
+  backend:
+    owner: Tech Lead (Backend)
+  frontend:
+    owner: Tech Lead (Frontend)
+  devops:
+    owner: DevOps Engineer
+  quality:
+    owner: QA Lead
+
+skills_assessment:
+  status: pending
+  template: docs/templates/skills-matrix-template.md

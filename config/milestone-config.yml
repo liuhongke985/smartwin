@@ -1,0 +1,10 @@
+milestones:
+  - id: M1
+    name: Governance & Team Setup
+    due: W1-D3
+  - id: M2
+    name: Environment & CI/CD Baseline
+    due: W1-D5
+  - id: M3
+    name: Validation & Kickoff Readiness
+    due: W2-D5

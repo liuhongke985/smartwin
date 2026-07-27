@@ -1,0 +1,7 @@
+{
+  "title": "SmartWin Phase 1 Baseline Dashboard",
+  "panels": [
+    { "title": "CI Success Rate", "type": "stat" },
+    { "title": "Build Duration", "type": "timeseries" }
+  ]
+}
