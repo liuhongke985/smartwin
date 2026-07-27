@@ -1,0 +1,127 @@
+# SmartWin Code Quality Analysis
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build and analyze with SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          if [ -f "pom.xml" ]; then
+            mvn verify sonar:sonar \
+              -Dsonar.projectKey=smartwin \
+              -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+              -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          fi
+
+  checkstyle:
+    name: Java Code Style
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run Checkstyle
+        run: |
+          if [ -f "pom.xml" ]; then
+            mvn checkstyle:check
+          fi
+
+  eslint:
+    name: Frontend Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: hashFiles('frontend/package.json') != ''
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run ESLint
+        run: npm run lint -- --format json --output-file eslint-report.json
+        working-directory: frontend
+        continue-on-error: true
+
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: frontend/eslint-report.json
+
+  code-coverage-report:
+    name: Coverage Report Comment
+    runs-on: ubuntu-latest
+    needs: [sonarqube]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Generate coverage report
+        run: |
+          if [ -f "pom.xml" ]; then
+            mvn test jacoco:report -q
+          fi
+
+      - name: Add coverage comment to PR
+        uses: actions/github-script@v7
+        if: hashFiles('target/site/jacoco/jacoco.xml') != ''
+        with:
+          script: |
+            const fs = require('fs');
+            const comment = `## Code Coverage Report\n\nCoverage report generated. Check the artifacts for details.`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

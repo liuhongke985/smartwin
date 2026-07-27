@@ -1,0 +1,165 @@
+# SmartWin Project - Team Organization Structure
+# Version: 1.0.0
+
+organization:
+  project_name: "SmartWin AI Governance Platform"
+  sponsor: "CTO"
+  pmo: "项目管理委员会 (PMC)"
+
+roles:
+  - id: "PM"
+    title: "项目经理"
+    name: "TBD"
+    responsibilities:
+      - "总体项目计划和进度管理"
+      - "资源协调与风险管理"
+      - "对外沟通与汇报"
+      - "Gate Review组织"
+    skills_required:
+      - "PMP认证"
+      - "敏捷开发经验"
+      - "微服务架构了解"
+    contact:
+      email: "pm@smartwin.example.com"
+
+  - id: "SA"
+    title: "系统架构师"
+    name: "TBD"
+    responsibilities:
+      - "整体架构设计与评审"
+      - "技术选型与决策"
+      - "关键问题技术攻关"
+      - "架构文档维护"
+    skills_required:
+      - "10年以上Java/微服务经验"
+      - "云原生架构经验"
+      - "AI/ML系统设计经验"
+    contact:
+      email: "architect@smartwin.example.com"
+
+  - id: "TL-BACKEND"
+    title: "后端技术负责人"
+    name: "TBD"
+    responsibilities:
+      - "后端模块开发与管理"
+      - "代码质量把控"
+      - "技术方案设计"
+    skills_required:
+      - "Spring Boot/Spring Cloud"
+      - "Microservices"
+      - "Java 17+"
+    contact:
+      email: "backend-lead@smartwin.example.com"
+
+  - id: "TL-FRONTEND"
+    title: "前端技术负责人"
+    name: "TBD"
+    responsibilities:
+      - "前端模块开发与管理"
+      - "UI/UX设计评审"
+      - "前端性能优化"
+    skills_required:
+      - "Vue 3 / TypeScript"
+      - "Pinia状态管理"
+      - "前端工程化"
+    contact:
+      email: "frontend-lead@smartwin.example.com"
+
+  - id: "TL-AI"
+    title: "AI技术负责人"
+    name: "TBD"
+    responsibilities:
+      - "AI/ML模型开发"
+      - "LLM集成与优化"
+      - "AI治理算法实现"
+    skills_required:
+      - "Python / PyTorch"
+      - "LLM/RAG技术"
+      - "MLOps"
+    contact:
+      email: "ai-lead@smartwin.example.com"
+
+  - id: "QA"
+    title: "QA负责人"
+    name: "TBD"
+    responsibilities:
+      - "测试策略制定"
+      - "测试用例管理"
+      - "自动化测试建设"
+    skills_required:
+      - "测试框架(JUnit/Pytest/Cypress)"
+      - "性能测试(k6/JMeter)"
+      - "CI/CD集成测试"
+    contact:
+      email: "qa@smartwin.example.com"
+
+  - id: "DEVOPS"
+    title: "DevOps工程师"
+    name: "TBD"
+    responsibilities:
+      - "CI/CD管道维护"
+      - "基础设施管理"
+      - "监控告警配置"
+    skills_required:
+      - "Kubernetes/Docker"
+      - "GitHub Actions"
+      - "Prometheus/Grafana"
+    contact:
+      email: "devops@smartwin.example.com"
+
+teams:
+  - name: "后端开发团队"
+    lead: "TL-BACKEND"
+    size: 5
+    focus: ["SmartData", "SmartChain", "API网关"]
+
+  - name: "前端开发团队"
+    lead: "TL-FRONTEND"
+    size: 3
+    focus: ["管理控制台", "数据可视化", "用户界面"]
+
+  - name: "AI研发团队"
+    lead: "TL-AI"
+    size: 4
+    focus: ["AI模型", "LLM集成", "数据分析"]
+
+  - name: "测试团队"
+    lead: "QA"
+    size: 3
+    focus: ["功能测试", "性能测试", "自动化测试"]
+
+  - name: "DevOps团队"
+    lead: "DEVOPS"
+    size: 2
+    focus: ["CI/CD", "基础设施", "监控"]
+
+skills_matrix:
+  technologies:
+    - Java: ["TL-BACKEND", "SA"]
+    - Python: ["TL-AI"]
+    - "Vue 3": ["TL-FRONTEND"]
+    - Kubernetes: ["DEVOPS", "SA"]
+    - "Spring Cloud": ["TL-BACKEND", "SA"]
+    - LLM: ["TL-AI"]
+    - MySQL: ["TL-BACKEND", "SA"]
+    - Elasticsearch: ["TL-BACKEND", "TL-AI"]
+
+communication:
+  standup:
+    frequency: "daily"
+    time: "09:30"
+    duration: "15 min"
+    platform: "Teams/Zoom"
+  weekly_review:
+    frequency: "weekly"
+    day: "Friday"
+    time: "16:00"
+    duration: "60 min"
+  sprint_review:
+    frequency: "bi-weekly"
+    duration: "90 min"
+  channels:
+    chat: "Teams/Slack"
+    issue_tracking: "GitHub Issues"
+    documentation: "GitHub Wiki"
+    code_review: "GitHub Pull Requests"

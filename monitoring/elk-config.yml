@@ -1,0 +1,107 @@
+# SmartWin ELK Stack Configuration
+# Logstash pipeline configuration for log processing
+
+input:
+  beats:
+    port: 5044
+    ssl: false
+
+filter:
+  # Parse JSON logs from Spring Boot services
+  - if [fields][service] {
+      json:
+        source: message
+        target: parsed_log
+      
+      date:
+        match: ["parsed_log.timestamp", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"]
+        target: "@timestamp"
+      
+      mutate:
+        add_field:
+          service: "%{[fields][service]}"
+          environment: "%{[fields][environment]}"
+          log_level: "%{[parsed_log][level]}"
+          trace_id: "%{[parsed_log][traceId]}"
+          span_id: "%{[parsed_log][spanId]}"
+        remove_field: ["message", "parsed_log"]
+    }
+
+  # Parse Python/AI service logs
+  - if [fields][service] == "smartchain-llm" {
+      grok:
+        match:
+          message: "%{TIMESTAMP_ISO8601:timestamp} \[%{LOGLEVEL:level}\] %{DATA:logger}: %{GREEDYDATA:log_message}"
+      
+      mutate:
+        add_field:
+          service_type: "ai"
+    }
+
+  # Add GeoIP for request logs
+  - if [clientip] {
+      geoip:
+        source: clientip
+    }
+
+  # Mask sensitive data
+  - mutate:
+      gsub:
+        - message, "******", "******"
+        - message, "token=[^&\s]*", "token=****"
+        - message, "Authorization: ******", "Authorization: ******"
+
+output:
+  elasticsearch:
+    hosts: ["elasticsearch:9200"]
+    index: "smartwin-%{[fields][service]}-%{+YYYY.MM.dd}"
+    template_name: "smartwin"
+    ilm_enabled: true
+    ilm_rollover_alias: "smartwin-logs"
+    ilm_pattern: "{now/d}-000001"
+    ilm_policy: "smartwin-log-policy"
+
+# Index Lifecycle Management Policy (ILM)
+index_lifecycle:
+  smartwin-log-policy:
+    phases:
+      hot:
+        min_age: 0ms
+        actions:
+          rollover:
+            max_primary_shard_size: 50gb
+            max_age: 1d
+      warm:
+        min_age: 7d
+        actions:
+          shrink:
+            number_of_shards: 1
+          forcemerge:
+            max_num_segments: 1
+      cold:
+        min_age: 30d
+        actions:
+          freeze: {}
+      delete:
+        min_age: 90d
+        actions:
+          delete: {}
+
+# Kibana Dashboard Configuration
+kibana:
+  index_patterns:
+    - name: "smartwin-*"
+      time_field: "@timestamp"
+  
+  saved_searches:
+    - name: "SmartWin Errors"
+      query: "log_level: ERROR"
+      filters:
+        - term:
+            service: "smartwin-*"
+    
+    - name: "Slow API Requests"
+      query: "duration_ms > 500"
+    
+    - name: "AI Chain Executions"
+      query: "service: smartchain-llm"

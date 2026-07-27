@@ -1,0 +1,98 @@
+# SmartWin APM Configuration
+# Using Apache SkyWalking for distributed tracing
+
+skywalking:
+  oap_server: "oap-server:11800"
+  
+  agents:
+    java:
+      plugin: skywalking-java-agent
+      version: "9.1.0"
+      config:
+        agent.service_name: "${SERVICE_NAME:smartwin-unknown}"
+        agent.namespace: "smartwin"
+        agent.instance_name: "${HOSTNAME}"
+        agent.keep_tracing_max_sec: 60
+        collector.backend_service: "oap-server:11800"
+        logging.level: INFO
+        plugin.spring.tag_annotation: true
+        plugin.toolkit.use_interceptor_context_in_async: true
+        
+    python:
+      plugin: skywalking-python
+      version: "1.7.0"
+      config:
+        SW_AGENT_NAME: "${SERVICE_NAME:smartwin-ai}"
+        SW_AGENT_NAMESPACE: "smartwin"
+        SW_AGENT_COLLECTOR_BACKEND_SERVICES: "oap-server:11800"
+        SW_LOGGING_LEVEL: "INFO"
+
+sampling:
+  rate: 1000  # per 1000 requests, 100%
+  slow_request_threshold: 500  # ms, always trace slow requests
+
+storage:
+  elasticsearch:
+    nameSpace: "smartwin"
+    clusterNodes: "elasticsearch:9200"
+    protocol: HTTP
+    connectTimeout: 500
+    socketTimeout: 10000
+    responseTimeout: 15000
+    numOfResultWindow: 10000
+    bulkActions: 1000
+    batchOfBytes: 10485760
+    flushInterval: 10
+    concurrentRequests: 2
+    indexShardsNumber: 1
+    superDatasetDayStep: -1
+
+custom_metrics:
+  business_metrics:
+    - name: "data_quality_check_duration"
+      description: "Duration of data quality checks"
+      type: histogram
+      buckets: [100, 500, 1000, 5000, 10000]
+      labels: ["asset_id", "check_type"]
+    
+    - name: "ai_chain_execution_duration"
+      description: "Duration of AI chain executions"
+      type: histogram
+      buckets: [500, 1000, 3000, 5000, 10000, 30000]
+      labels: ["chain_id", "status"]
+    
+    - name: "llm_tokens_consumed"
+      description: "Total LLM tokens consumed"
+      type: counter
+      labels: ["model", "chain_id"]
+    
+    - name: "data_asset_access_count"
+      description: "Number of data asset accesses"
+      type: counter
+      labels: ["asset_id", "user_role", "access_type"]
+
+alerts:
+  slow_trace_threshold: 5000  # ms
+  error_rate_threshold: 0.05  # 5%
+  
+  notifications:
+    webhook:
+      url: "${ALERT_WEBHOOK_URL}"
+      method: POST
+    
+    email:
+      host: "${SMTP_HOST}"
+      port: 587
+      from: "apm@smartwin.example.com"
+      to:
+        - "platform-team@smartwin.example.com"
+
+dashboards:
+  service_topology: true
+  trace_analysis: true
+  log_analysis: true
+  
+  retention:
+    metrics: 8  # days
+    traces: 2   # days
+    logs: 7     # days
