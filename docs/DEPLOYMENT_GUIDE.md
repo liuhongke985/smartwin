@@ -152,8 +152,8 @@ JWT_EXPIRATION=3600
 ```bash
 # 创建密钥
 kubectl create secret generic smartwin-secrets \
-  --from-literal=db-****** \
-  --from-literal=redis-****** \
+  --from-literal=db-cred=<db_value> \
+  --from-literal=redis-cred=<redis_value> \
   --from-literal=jwt-secret=<jwt_secret> \
   -n smartwin
 ```

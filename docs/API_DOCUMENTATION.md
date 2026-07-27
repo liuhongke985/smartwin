@@ -3,7 +3,7 @@
 ## 文档信息
 - **版本**: 1.0.0
 - **Base URL**: `https://api.smartwin.example.com/api/v1`
-- **认证**: ****** (JWT)
+- **认证**: JWT (RS256)
 
 ---
 
@@ -18,7 +18,7 @@
 
 ## 1. 认证
 
-所有API请求需要在Header中携带******
+所有API请求需要在Header中携带 JWT 认证凭证:
 
 ```
 Authorization: ******
