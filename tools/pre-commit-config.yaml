@@ -1,0 +1,55 @@
+# SmartWin pre-commit 配置
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.15.0
+    hooks:
+      - id: eslint
+        files: \.(js|ts|vue)$
+# precommit-rule 1: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 2: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 3: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 4: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 5: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 6: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 7: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 8: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 9: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 10: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 11: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 12: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 13: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 14: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 15: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 16: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 17: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 18: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 19: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 20: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 21: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 22: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 23: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 24: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 25: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 26: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 27: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 28: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 29: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 30: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 31: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 32: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 33: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 34: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 35: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 36: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# precommit-rule 37: 本节为基础设施标准化补充说明，用于团队执行一致性。

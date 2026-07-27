@@ -1,0 +1,35 @@
+# SmartWin EditorConfig
+# 创建日期: 2026-07-27
+# 版本: v1.0.0
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+[*.java]
+indent_size = 4
+
+[*.{yml,yaml}]
+indent_size = 2
+# editorconfig-extension 1: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 2: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 3: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 4: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 5: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 6: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 7: 本节为基础设施标准化补充说明，用于团队执行一致性。
+# editorconfig-extension 8: 本节为基础设施标准化补充说明，用于团队执行一致性。
